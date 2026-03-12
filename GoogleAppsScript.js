@@ -1,7 +1,8 @@
 // MÃ GOOGLE APPS SCRIPT - DÁN VÀO GOOGLE SHEETS (Mục Tiện ích mở rộng -> Apps Script)
+const SPREADSHEET_ID = "1zfnZTgMJ0vi2J5tP4rnMyPBry6UXK0VQim-neSrrGic";
 
 function doGet(e) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheetNames = ["dsgv", "dshs", "thutien", "bank", "lichhoc"];
   var data = {};
   
@@ -31,7 +32,7 @@ function doGet(e) {
 }
 
 function doPost(e) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   var payload = JSON.parse(e.postData.contents);
   var action = payload.action;
   var sheetName = payload.sheetName;
