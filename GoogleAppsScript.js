@@ -2,7 +2,7 @@
 
 function doGet(e) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheetNames = ["dsgv", "dshs", "thutien", "bank"];
+  var sheetNames = ["dsgv", "dshs", "thutien", "bank", "lichhoc"];
   var data = {};
   
   sheetNames.forEach(function(name) {
