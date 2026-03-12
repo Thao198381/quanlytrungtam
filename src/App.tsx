@@ -50,7 +50,7 @@ const App: React.FC = () => {
     
     setLoading(true);
     try {
-      const res = await fetch('/api/sync/google-sheets', {
+      const res = await fetch(Link_Admin, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ gasUrl })
@@ -69,9 +69,7 @@ const App: React.FC = () => {
     }
   };
 
-  const handlePushToSheets = async () => {
-    if (!gasUrl) return alert("Vui lòng nhập URL Google Apps Script");
-    if (!window.confirm("Bạn có chắc chắn muốn đẩy dữ liệu từ Web lên Google Sheets? Dữ liệu trên Sheets sẽ bị ghi đè.")) return;
+  const handlePushToSheets = async () => {  
 
     setLoading(true);
     try {
@@ -83,7 +81,7 @@ const App: React.FC = () => {
       ];
 
       for (const item of syncData) {
-        await fetch(gasUrl, {
+        await fetch(Link_Admin, {
           method: 'POST',
           mode: 'no-cors', // GAS requires no-cors for simple posts or proper CORS headers
           body: JSON.stringify({
@@ -110,10 +108,10 @@ const App: React.FC = () => {
   const fetchData = async () => {
     try {
       const [tRes, sRes, bRes, ttRes] = await Promise.all([
-        fetch('/api/teachers'),
-        fetch('/api/students'),
-        fetch('/api/bank'),
-        fetch('/api/thutien')
+        fetch(Link_Admin, { method: 'POST', body: JSON.stringify({ action: 'get_teachers' }) }),
+        fetch(Link_Admin, { method: 'POST', body: JSON.stringify({ action: 'get_students' }) }),
+        fetch(Link_Admin, { method: 'POST', body: JSON.stringify({ action: 'get_bank' }) }),
+        fetch(Link_Admin, { method: 'POST', body: JSON.stringify({ action: 'get_thutien' }) })
       ]);
       setTeachers(await tRes.json());
       setStudents(await sRes.json());
@@ -128,7 +126,7 @@ const App: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch('/api/login', {
+      const res = await fetch(Link_Admin, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ role, username, password })
@@ -163,10 +161,11 @@ const App: React.FC = () => {
     const endpoint = user?.role === 'admin' ? '/api/admin/change-password' : '/api/teacher/change-password';
     const body = user?.role === 'admin' ? { newPassword } : { idGV: user?.idGV, newPassword };
     
-    await fetch(endpoint, {
+    await fetch(Link_Admin, {
       method: 'POST',
+     
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      body: JSON.stringify( action: 'change_password', body)
     });
     alert("Đổi mật khẩu thành công!");
     setShowPasswordChange(false);
@@ -181,7 +180,7 @@ const App: React.FC = () => {
     
     setLoading(true);
     try {
-      await fetch(`/api/upload/${type}`, {
+      await fetch(Link_Admin, {
         method: 'POST',
         body: formData
       });
@@ -196,16 +195,16 @@ const App: React.FC = () => {
 
   const handleDeleteStudent = async (idHS: string, idclass: string) => {
     if (!window.confirm("Bạn có chắc chắn muốn xóa học sinh này?")) return;
-    await fetch('/api/students/delete', {
+    await fetch(Link_Admin, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ idHS, idclass })
+      body: JSON.stringify({ idHS, idclass, action: 'delete_student' })
     });
     fetchData();
   };
 
   const handleAttendance = async (idclass: string, attendanceData: any) => {
-    await fetch('/api/attendance', {
+    await fetch(Link_Admin, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ idclass, attendanceData })
@@ -216,7 +215,7 @@ const App: React.FC = () => {
 
   const handleResetAttendance = async (idclass: string) => {
     if (!window.confirm("CẢNH BÁO: Bạn có chắc chắn muốn Reset điểm danh của lớp này? Mọi dữ liệu sẽ bị xóa!")) return;
-    await fetch('/api/attendance/reset', {
+    await fetch(Link_Admin, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ idclass })
@@ -226,7 +225,7 @@ const App: React.FC = () => {
 
   const handleCalculateCollection = async () => {
     setLoading(true);
-    await fetch('/api/collection/calculate', { method: 'POST' });
+    await fetch(Link_Admin, { method: 'POST', body: JSON.stringify({ action: 'calculate_collection' }) });
     fetchData();
     setLoading(false);
     alert("Đã tính toán tiền thu đợt mới!");
