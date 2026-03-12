@@ -1,0 +1,5 @@
+{
+  "name": "Tutoring Center Manager",
+  "description": "A comprehensive management system for tutoring centers with roles for Admin, Teachers, Students, and Parents.",
+  "requestFramePermissions": []
+}
