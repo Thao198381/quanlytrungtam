@@ -156,17 +156,19 @@ const App: React.FC = () => {
     setPassword('');
   };
 
-  const handlePasswordChange = async () => {
+ const handlePasswordChange = async () => {
     if (!newPassword) return;
-    const endpoint = user?.role === 'admin' ? '/api/admin/change-password' : '/api/teacher/change-password';
-    const body = user?.role === 'admin' ? { newPassword } : { idGV: user?.idGV, newPassword };
+    
+    // Thêm action và role vào body
+    const body = user?.role === 'admin' 
+      ? { action: 'change_password', newPassword, role: 'admin' } 
+      : { action: 'change_password', idGV: user?.idGV, newPassword, role: 'teacher' };
     
     await fetch(Link_Admin, {
       method: 'POST',
-     
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify( action: 'change_password', body)
+      body: JSON.stringify(body)
     });
+    
     alert("Đổi mật khẩu thành công!");
     setShowPasswordChange(false);
   };
